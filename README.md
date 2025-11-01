@@ -464,3 +464,35 @@ This is an example of how features are built by orchestrating concepts. It's not
 5.  **`UpdateUserEmailInReviews` Sync (Conceptual):**
     *   I've included a conceptual sync to show how user data changes might propagate. However, since `Review` currently stores `userId` (which is immutable) and not `email` or `username` directly, this sync doesn't have a direct action in the current `Review` spec. It serves as a reminder that if user-facing information (like display name or email) were stored directly in `Review` records, a sync would be needed to update it upon user profile changes. For this specific `Review` structure, the `userId` link is sufficient and immutable.
 
+# Design Changes (since 4b)
+
+## NEW SECTION ADDED (Line 48+)
+Added section: "API Specification: Minimal Additions for Frontend Integration"
+This adds endpoints needed for the frontend without changing the existing spec.
+Store Additions (Lines 52-138)
+Added:
+### 1. POST /api/Store/listStores (Lines 54-95)
+Returns all stores as full objects (not just IDs)
+Adds fields: description, phone, hours, specialties, image
+### 2. POST /api/Store/getStoreById (Lines 99-138)
+Returns a single store with the same new fields
+Mirrors listStores for a single storeId
+Review Additions (Lines 140-230)
+## Added:
+### 3. POST /api/Review/listReviewsForStore (Lines 142-184)
+Returns full review objects for a store
+Original getReviewsForStore returned only reviewIds[]
+### 4. POST /api/Review/listReviewsByUser (Lines 188-230)
+Returns full review objects by user
+Original getReviewsByUser returned only reviewIds[]
+Review Field Additions
+tags: ["string"]
+createdAt: "string"
+Previously: reviewId, userId, storeId, text, rating.
+
+## Backend Spec Changes
+
+### Tagging Concept
+
+Return shape of _getStoresByTag turned into an array of objects, as per the api-spec document requested.
+

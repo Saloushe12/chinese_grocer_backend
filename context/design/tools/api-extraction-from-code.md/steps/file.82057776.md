@@ -1,0 +1,27 @@
+---
+timestamp: 'Tue Oct 21 2025 20:28:25 GMT-0400 (Eastern Daylight Time)'
+parent: '[[..\20251021_202825.a5bfb5e9.md]]'
+content_id: 82057776859d755efe902b2e49fc53b785641c9a75ad150c6aa8b46024e0f689
+---
+
+# file: deno.json
+
+```json
+{
+  "imports": {
+    "@concepts/": "./src/concepts/",
+    "@utils/": "./src/utils/",
+    "mongodb": "npm:mongodb@^6.20.0", 
+    "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
+    "@test": "https://deno.land/std@0.208.0/assert/mod.ts",
+    "@dotenv": "https://deno.land/std@0.208.0/dotenv/mod.ts",
+    "@std/assert": "jsr:@std/assert@^1.0.0"
+  },
+  "nodeModulesDir": "auto",
+  "tasks": {
+        "concepts": "deno run --allow-net --allow-read --allow-sys --allow-env src/concept_server.ts --port 8000 --baseUrl /api"
+    }
+}
+    
+
+```

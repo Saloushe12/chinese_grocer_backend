@@ -1,6 +1,6 @@
 import { Collection, Db } from "mongodb";
 import { Empty, ID } from "@utils/types.ts";
-import { freshID } from "@utils/database.ts"; 
+import { freshID } from "@utils/database.ts";
 
 // Declare collection prefix, use concept name
 const PREFIX = "Tagging" + ".";
@@ -8,7 +8,7 @@ const PREFIX = "Tagging" + ".";
 // storeId is an external ID, so it's treated polymorphically by Tagging.
 // This means the Tagging concept does not make assumptions about the StoreId's internal structure
 // or directly interact with the Store concept.
-type StoreId = ID; 
+type StoreId = ID;
 // Tags themselves are just strings in the spec, not separate entities.
 type Tag = string;
 
@@ -39,7 +39,9 @@ export default class TaggingConcept {
    *          If no `Tagging` record exists for the `storeId`, a new one is created.
    * @returns {} on success, { error } on failure.
    */
-  async addTag({ storeId, tag }: { storeId: StoreId; tag: Tag }): Promise<Empty | { error: string }> {
+  async addTag(
+    { storeId, tag }: { storeId: StoreId; tag: Tag },
+  ): Promise<Empty | { error: string }> {
     try {
       // Find and update the existing document for the given storeId.
       // $addToSet ensures that 'tag' is only added if it's not already present in the 'tags' array.
@@ -61,10 +63,13 @@ export default class TaggingConcept {
 
       return {}; // Successfully added the tag or ensured its presence
     } catch (e: unknown) {
-        // Narrow the error type safely
-        const message = e instanceof Error ? e.message : "Unknown error";
-        console.error(`Error in Tagging.addTag for storeId '${storeId}' and tag '${tag}':`, e);
-        return { error: `Failed to add tag: ${message}` };
+      // Narrow the error type safely
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(
+        `Error in Tagging.addTag for storeId '${storeId}' and tag '${tag}':`,
+        e,
+      );
+      return { error: `Failed to add tag: ${message}` };
     }
   }
 
@@ -76,7 +81,9 @@ export default class TaggingConcept {
    * @effects Removes the specified `tag` from the `storeId`'s set of tags.
    * @returns {} on success, { error } on failure.
    */
-  async removeTag({ storeId, tag }: { storeId: StoreId; tag: Tag }): Promise<Empty | { error: string }> {
+  async removeTag(
+    { storeId, tag }: { storeId: StoreId; tag: Tag },
+  ): Promise<Empty | { error: string }> {
     try {
       // First, check if the storeId exists and contains the tag, as per 'requires' conditions.
       const existingDoc = await this.taggings.findOne({ _id: storeId });
@@ -96,9 +103,11 @@ export default class TaggingConcept {
       );
 
       if (!result.acknowledged) {
-        return { error: "Database operation for removeTag was not acknowledged." };
+        return {
+          error: "Database operation for removeTag was not acknowledged.",
+        };
       }
-      
+
       // If after removing the tag, the tags array becomes empty, optionally remove the document itself.
       // This keeps the collection clean from empty tagging records.
       if (result.modifiedCount > 0) { // Only check if a tag was actually removed
@@ -110,10 +119,13 @@ export default class TaggingConcept {
 
       return {}; // Successfully removed the tag
     } catch (e: unknown) {
-        // Narrow the error type safely
-        const message = e instanceof Error ? e.message : "Unknown error";
-        console.error(`Error in Tagging.addTag for storeId '${storeId}' and tag '${tag}':`, e);
-        return { error: `Failed to add tag: ${message}` };
+      // Narrow the error type safely
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(
+        `Error in Tagging.addTag for storeId '${storeId}' and tag '${tag}':`,
+        e,
+      );
+      return { error: `Failed to add tag: ${message}` };
     }
   }
 
@@ -123,18 +135,35 @@ export default class TaggingConcept {
    * @effects Returns a set of all `storeId`s that are currently associated with the given `tag`.
    * @returns { storeIds: StoreId[] } on success, { error } on failure.
    */
-  async _getStoresByTag({ tag }: { tag: Tag }): Promise<{ storeIds: StoreId[] } | { error: string }> {
+  // _getStoresByTag(tag: String): [{ storeId: ID }]
+  async _getStoresByTag(
+    { tag }: { tag: string },
+  ): Promise<Array<{ storeId: ID }> | { error: string }> {
     try {
-      // Find all documents where the 'tags' array contains the specified tag.
-      // Project only the '_id' field to return just the store IDs.
-      const documents = await this.taggings.find({ tags: tag }).project({ _id: 1 }).toArray();
-      // Map the retrieved documents to an array of StoreId.
-      const storeIds = documents.map(doc => doc._id);
-      return { storeIds };
+      const docs = await this.taggings.find({ tags: tag }).project({ _id: 1 })
+        .toArray();
+      return docs.map((doc) => ({ storeId: doc._id }));
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
-      console.error(`Error in Tagging._getStoresByTag for tag '${tag}':`, e);
       return { error: `Failed to retrieve stores by tag: ${message}` };
+    }
+  }
+
+  /**
+   * listTagsForStore(storeId: String): { tags: String[] } | { error: String }
+   * @effects Returns the array of tags for the given storeId. If none exist, returns { tags: [] }.
+   * @returns { tags: string[] } on success, or { error } on unexpected failure.
+   */
+  // listTagsForStore(storeId: String): { tags: string[] }
+  async listTagsForStore(
+    { storeId }: { storeId: ID },
+  ): Promise<{ tags: string[] } | { error: string }> {
+    try {
+      const doc = await this.taggings.findOne({ _id: storeId });
+      return { tags: doc?.tags ?? [] };
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      return { error: `Failed to retrieve tags: ${message}` };
     }
   }
 }
