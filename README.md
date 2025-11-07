@@ -496,3 +496,12 @@ Previously: reviewId, userId, storeId, text, rating.
 
 Return shape of _getStoresByTag turned into an array of objects, as per the api-spec document requested.
 
+### Store Concept
+
+Revised concept isolation, now other concepts only operate with a generic number, storeId, instead of actual store objects.
+
+_getStore has been deprecated, replaced by getStoreById, which uses the new storeId system. 
+
+Query return types for lookups like getStoresByName and getStoresByAddress have been changed, used to return a set, now returns an array as per api-spec documentation requirements
+
+Added more intrinsic fields to Store objects like description, phone number, and other relevant fields that one would expect for a website about stores. 
