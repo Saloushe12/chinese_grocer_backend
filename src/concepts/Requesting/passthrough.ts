@@ -1,50 +1,75 @@
-/**
- * The Requesting concept exposes passthrough routes by default,
- * which allow POSTs to the route:
- *
- * /{REQUESTING_BASE_URL}/{Concept name}/{action or query}
- *
- * to passthrough directly to the concept action or query.
- * This is a convenient and natural way to expose concepts to
- * the world, but should only be done intentionally for public
- * actions and queries.
- *
- * This file allows you to explicitly set inclusions and exclusions
- * for passthrough routes:
- * - inclusions: those that you can justify their inclusion
- * - exclusions: those to exclude, using Requesting routes instead
- */
+// src/concepts/Requesting/passthrough.ts
+import "jsr:@std/dotenv/load";
+
+const BASE = Deno.env.get("REQUESTING_BASE_URL") ?? "/api";
+const R = (concept: string, action: string) => `${BASE}/${concept}/${action}`;
 
 /**
  * INCLUSIONS
- *
- * Each inclusion must include a justification for why you think
- * the passthrough is appropriate (e.g. public query).
- *
- * inclusions = {"route": "justification"}
+ * Public, read-only queries only. No mutating actions or internal validation queries here.
  */
-
 export const inclusions: Record<string, string> = {
-  // Feel free to delete these example inclusions
-  "/api/LikertSurvey/_getSurveyQuestions": "this is a public query",
-  "/api/LikertSurvey/_getSurveyResponses": "responses are public",
-  "/api/LikertSurvey/_getRespondentAnswers": "answers are visible",
-  "/api/LikertSurvey/submitResponse": "allow anyone to submit response",
-  "/api/LikertSurvey/updateResponse": "allow anyone to update their response",
+  // --- Store (queries that exist) ---
+  [R("Store", "_listAllStores")]:
+    "Public read; list all stores with non-sensitive details.",
+  [R("Store", "_getStoreDetails")]:
+    "Public read; fetch a store's non-sensitive details by ID.",
+  [R("Store", "_getStoresByName")]: "Public read; search stores by name.",
+  [R("Store", "_getStoresByAddress")]: "Public read; search stores by address.",
+
+  // --- Tagging (queries that exist) ---
+  [R("Tagging", "_getStoresByTag")]:
+    "Public read; find stores that have a given tag.",
+  [R("Tagging", "_getTagsForStore")]:
+    "Public read; fetch tags attached to a store.",
+
+  // --- Review (queries that exist) ---
+  [R("Review", "_getReviewByIdFull")]:
+    "Public read; full review details by review ID.",
+  [R("Review", "_getReviewsForStoreFull")]:
+    "Public read; full review details for a store.",
+  [R("Review", "_getReviewsByUserFull")]:
+    "Public read; full review details created by a user.",
+
+  // --- Rating (query that exists) ---
+  [R("Rating", "_getRating")]: "Public read; aggregated rating for a store.",
+
+  // --- User (safe, non-sensitive profile read) ---
+  [R("User", "_getUserDetails")]:
+    "Public read; non-sensitive user profile details by user ID.",
 };
 
 /**
  * EXCLUSIONS
- *
- * Excluded routes fall back to the Requesting concept, and will
- * instead trigger the normal Requesting.request action. As this
- * is the intended behavior, no justification is necessary.
- *
- * exclusions = ["route"]
+ * Everything here must go through Requesting.request + your syncs.
+ * Include all mutating actions and internal validation queries.
  */
+export const exclusions: string[] = [
+  // --- User (mutations + internal validation) ---
+  R("User", "registerUser"),
+  R("User", "authenticateUser"),
+  R("User", "updateUserEmail"),
+  R("User", "deleteUser"),
+  R("User", "_userExists"),
+  R("User", "_getUserByUsernameOrEmail"),
 
-export const exclusions: Array<string> = [
-  // Feel free to delete these example exclusions
-  "/api/LikertSurvey/createSurvey",
-  "/api/LikertSurvey/addQuestion",
+  // --- Store (mutations + internal validation) ---
+  R("Store", "createStore"),
+  R("Store", "deleteStore"),
+  R("Store", "_storeExists"),
+
+  // --- Tagging (mutations/internal) ---
+  R("Tagging", "addTag"),
+  R("Tagging", "removeTag"),
+  R("Tagging", "deleteTagsForStore"),
+
+  // --- Review (mutations/internal) ---
+  R("Review", "createReview"),
+  R("Review", "deleteReview"),
+  R("Review", "deleteReviewsForStore"),
+  R("Review", "deleteReviewsByUser"),
+
+  // --- Rating (internal-only mutations) ---
+  R("Rating", "updateRating"),
+  R("Rating", "deleteRatingForStore"),
 ];

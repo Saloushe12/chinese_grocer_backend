@@ -673,8 +673,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@std/assert@1",
-      "npm:mongodb@^6.20.0"
+      "jsr:@std/assert@1"
     ],
     "packageJson": {
       "dependencies": [

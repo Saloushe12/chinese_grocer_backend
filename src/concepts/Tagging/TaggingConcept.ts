@@ -1,40 +1,37 @@
-import { Collection, Db } from "mongodb";
+import { Collection, Db } from "npm:mongodb";
 import { Empty, ID } from "@utils/types.ts";
-import { freshID } from "@utils/database.ts";
 
-// Declare collection prefix, use concept name
 const PREFIX = "Tagging" + ".";
 
-// storeId is an external ID, so it's treated polymorphically by Tagging.
-// This means the Tagging concept does not make assumptions about the StoreId's internal structure
-// or directly interact with the Store concept.
 type StoreId = ID;
-// Tags themselves are just strings in the spec, not separate entities.
-type Tag = string;
+type Tag = string; // Tags themselves are just strings in the spec, not separate entities.
 
 /**
  * Each `Tagging` record associates tags with a store:
- * `storeId`: String (references a `Store`) - used as the document's _id
- * `tags`: Set<String> (a collection of user-defined tags)
+ * @property _id The unique identifier for the store this document tags (`storeId`).
+ * @property tags An array of tags associated with the store.
  */
 interface TaggingDoc {
   _id: StoreId; // The unique identifier for the store this document tags
   tags: Tag[]; // An array of tags associated with the store
 }
 
+/**
+ * @concept Tagging
+ * @purpose To allow arbitrary classification of stores using descriptive tags.
+ */
 export default class TaggingConcept {
   private taggings: Collection<TaggingDoc>;
 
   constructor(private readonly db: Db) {
-    // Initialize the MongoDB collection for tagging records
     this.taggings = this.db.collection(PREFIX + "taggings");
   }
 
   /**
-   * addTag(storeId: String, tag: String)
+   * addTag(storeId: String, tag: String): {} | { error: String }
    *
    * @requires The `storeId` must exist (conceptually, in the `Store` concept).
-   *           The `tag` should ideally be validated for format/content by a higher-level mechanism or a dedicated `Tag` concept if complexity arises. For now, it's a string.
+   *           The `tag` should ideally be validated for format/content by a higher-level mechanism.
    * @effects Adds the specified `tag` to the `storeId`'s set of tags. If the tag already exists, the set remains unchanged.
    *          If no `Tagging` record exists for the `storeId`, a new one is created.
    * @returns {} on success, { error } on failure.
@@ -43,27 +40,17 @@ export default class TaggingConcept {
     { storeId, tag }: { storeId: StoreId; tag: Tag },
   ): Promise<Empty | { error: string }> {
     try {
-      // Find and update the existing document for the given storeId.
-      // $addToSet ensures that 'tag' is only added if it's not already present in the 'tags' array.
-      // upsert: true means if a document with _id: storeId doesn't exist, a new one will be created.
-      // This allows the Tagging concept to manage tags for any storeId it is given,
-      // without needing to explicitly check the existence of the storeId in the Store concept,
-      // upholding concept independence. The 'requires' for storeId existence is expected to be
-      // enforced by an orchestrating sync or the calling application layer.
       const result = await this.taggings.updateOne(
         { _id: storeId },
         { $addToSet: { tags: tag } },
         { upsert: true },
       );
 
-      // Check if the database operation was acknowledged.
       if (!result.acknowledged) {
         return { error: "Database operation for addTag was not acknowledged." };
       }
-
-      return {}; // Successfully added the tag or ensured its presence
+      return {};
     } catch (e: unknown) {
-      // Narrow the error type safely
       const message = e instanceof Error ? e.message : "Unknown error";
       console.error(
         `Error in Tagging.addTag for storeId '${storeId}' and tag '${tag}':`,
@@ -74,7 +61,7 @@ export default class TaggingConcept {
   }
 
   /**
-   * removeTag(storeId: String, tag: String)
+   * removeTag(storeId: String, tag: String): {} | { error: String }
    *
    * @requires The `storeId` must exist (i.e., there is a tagging record for it).
    *           The `tag` must be present in the store's tag set.
@@ -85,18 +72,14 @@ export default class TaggingConcept {
     { storeId, tag }: { storeId: StoreId; tag: Tag },
   ): Promise<Empty | { error: string }> {
     try {
-      // First, check if the storeId exists and contains the tag, as per 'requires' conditions.
       const existingDoc = await this.taggings.findOne({ _id: storeId });
-
       if (!existingDoc) {
         return { error: `Store with ID '${storeId}' not found for tagging.` };
       }
-
       if (!existingDoc.tags.includes(tag)) {
         return { error: `Tag '${tag}' not found for store ID '${storeId}'.` };
       }
 
-      // If requirements are met, proceed to remove the tag using $pull.
       const result = await this.taggings.updateOne(
         { _id: storeId },
         { $pull: { tags: tag } },
@@ -108,62 +91,93 @@ export default class TaggingConcept {
         };
       }
 
-      // If after removing the tag, the tags array becomes empty, optionally remove the document itself.
-      // This keeps the collection clean from empty tagging records.
-      if (result.modifiedCount > 0) { // Only check if a tag was actually removed
+      // Optional cleanup: if after removing the tag, the tags array becomes empty, remove the document itself.
+      if (result.modifiedCount > 0) {
         const updatedDoc = await this.taggings.findOne({ _id: storeId });
         if (updatedDoc && updatedDoc.tags.length === 0) {
           await this.taggings.deleteOne({ _id: storeId });
         }
       }
-
-      return {}; // Successfully removed the tag
+      return {};
     } catch (e: unknown) {
-      // Narrow the error type safely
       const message = e instanceof Error ? e.message : "Unknown error";
       console.error(
-        `Error in Tagging.addTag for storeId '${storeId}' and tag '${tag}':`,
+        `Error in Tagging.removeTag for storeId '${storeId}' and tag '${tag}':`,
         e,
       );
-      return { error: `Failed to add tag: ${message}` };
+      return { error: `Failed to remove tag: ${message}` };
     }
   }
 
   /**
-   * _getStoresByTag(tag: String): { storeIds: Set<String> }
+   * deleteTagsForStore(storeId: String): {} | { error: String }
    *
-   * @effects Returns a set of all `storeId`s that are currently associated with the given `tag`.
-   * @returns { storeIds: StoreId[] } on success, { error } on failure.
+   * @requires The `storeId` must exist (conceptually).
+   * @effects Removes all `Tagging` records associated with the specified `storeId`.
+   *          This action is typically invoked by a synchronization.
+   * @returns {} on success, or { error } on failure.
    */
-  // _getStoresByTag(tag: String): [{ storeId: ID }]
+  async deleteTagsForStore(
+    { storeId }: { storeId: StoreId },
+  ): Promise<Empty | { error: string }> {
+    try {
+      await this.taggings.deleteOne({ _id: storeId });
+      return {}; // Success, even if no tagging record was found/deleted (idempotent)
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(`Error deleting tags for store '${storeId}': ${message}`);
+      return { error: `Failed to delete tags for store: ${message}` };
+    }
+  }
+
+  /**
+   * _getStoresByTag(tag: String): (storeId: String)
+   *
+   * @requires true
+   * @effects Returns a list of all `storeId`s that are currently associated with the given `tag`.
+   * @returns An array of objects, each containing a `storeId`.
+   *          Returns an empty array if no stores are found with the given `tag`.
+   */
   async _getStoresByTag(
     { tag }: { tag: string },
-  ): Promise<Array<{ storeId: ID }> | { error: string }> {
+  ): Promise<Array<{ storeId: ID }>> {
     try {
       const docs = await this.taggings.find({ tags: tag }).project({ _id: 1 })
         .toArray();
       return docs.map((doc) => ({ storeId: doc._id }));
     } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      return { error: `Failed to retrieve stores by tag: ${message}` };
+      console.error(
+        `Error retrieving stores by tag: ${
+          e instanceof Error ? e.message : "Unknown error"
+        }`,
+      );
+      return []; // Return empty array on error for queries
     }
   }
 
   /**
-   * listTagsForStore(storeId: String): { tags: String[] } | { error: String }
-   * @effects Returns the array of tags for the given storeId. If none exist, returns { tags: [] }.
-   * @returns { tags: string[] } on success, or { error } on unexpected failure.
+   * _getTagsForStore(storeId: String): (storeId: String, tags: Set<String>)
+   * @requires true
+   * @effects Returns the `storeId` and its associated `tags`.
+   * @returns An array containing a single object with `storeId` and `tags` (as a string array).
+   *          Returns an empty array if no tagging record is found for the `storeId`.
    */
-  // listTagsForStore(storeId: String): { tags: string[] }
-  async listTagsForStore(
+  async _getTagsForStore(
     { storeId }: { storeId: ID },
-  ): Promise<{ tags: string[] } | { error: string }> {
+  ): Promise<Array<{ storeId: ID; tags: string[] }>> {
     try {
       const doc = await this.taggings.findOne({ _id: storeId });
-      return { tags: doc?.tags ?? [] };
+      if (!doc) {
+        return [];
+      }
+      return [{ storeId: doc._id, tags: doc.tags }];
     } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      return { error: `Failed to retrieve tags: ${message}` };
+      console.error(
+        `Error retrieving tags for store '${storeId}': ${
+          e instanceof Error ? e.message : "Unknown error"
+        }`,
+      );
+      return []; // Return empty array on error for queries
     }
   }
 }

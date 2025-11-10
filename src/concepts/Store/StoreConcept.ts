@@ -1,24 +1,24 @@
-import { Collection, Db } from "mongodb";
+import { Collection, Db } from "npm:mongodb";
 import { Empty, ID } from "@utils/types.ts";
 import { freshID } from "@utils/database.ts";
 
-/**
- * @concept Store
- * @purpose Represent the identity and physical address of a store.
- */
 const PREFIX = "Store" + ".";
 
 /**
  * State: Each Store is represented by:
- * - `_id`: ID (storeId)
- * - `name`: string
- * - `address`: string
+ * @property _id The unique identifier for the store (storeId).
+ * @property name The name of the store.
+ * @property address The physical address of the store.
+ * @property description Optional descriptive text for the store.
+ * @property phone Optional contact phone number for the store.
+ * @property hours Optional operating hours for the store.
+ * @property specialties Optional list of specialties offered by the store.
+ * @property image Optional URL or identifier for the store's image.
  */
 interface StoreDoc {
   _id: ID; // Mapped from storeId in spec
   name: string;
   address: string;
-  // Add these optional fields:
   description?: string;
   phone?: string;
   hours?: string;
@@ -26,6 +26,12 @@ interface StoreDoc {
   image?: string;
 }
 
+/**
+ * @concept Store
+ * @purpose Represent the identity and physical address of a store.
+ * @principle A store's existence and location are fundamental. Interactions related to its classification, user feedback,
+ *            or popularity are external concerns managed by other concepts through synchronizations.
+ */
 export default class StoreConcept {
   private stores: Collection<StoreDoc>;
 
@@ -34,15 +40,9 @@ export default class StoreConcept {
   }
 
   /**
-   * @concept Store
-   * @purpose Represent the identity and physical address of a store.
-   * @principle A store's existence and location are fundamental. Interactions related to its classification, user feedback, or popularity are external concerns managed by other concepts through synchronizations.
-   */
-
-  /**
-   * createStore(name: String, address: String): { storeId: ID } | { error: String }
+   * createStore(name: String, address: String, ...optionalFields): { storeId: ID } | { error: String }
    * @requires No existing store has both the exact same `name` and `address`.
-   * @effects Creates a new store record and returns its unique `storeId`.
+   * @effects Creates a new store record including optional fields, and returns its unique `storeId`.
    * @returns { storeId: ID } on success or { error: string } if requirements are not met.
    */
   async createStore(
@@ -64,7 +64,6 @@ export default class StoreConcept {
       image?: string;
     },
   ): Promise<{ storeId: ID } | { error: string }> {
-    // Requires: No existing store has both the exact same `name` and `address`.
     const existingStore = await this.stores.findOne({ name, address });
     if (existingStore) {
       return {
@@ -72,7 +71,6 @@ export default class StoreConcept {
       };
     }
 
-    // Effect: Creates a new store record
     const newStoreId = freshID();
     const newStore: StoreDoc = {
       _id: newStoreId,
@@ -86,8 +84,6 @@ export default class StoreConcept {
     };
 
     await this.stores.insertOne(newStore);
-
-    // Effect: returns its unique `storeId`.
     return { storeId: newStoreId };
   }
 
@@ -100,79 +96,45 @@ export default class StoreConcept {
   async deleteStore(
     { storeId }: { storeId: ID },
   ): Promise<Empty | { error: string }> {
-    // Requires: The `storeId` must exist.
     const existingStore = await this.stores.findOne({ _id: storeId });
     if (!existingStore) {
       return { error: `Store with ID '${storeId}' not found.` };
     }
 
-    // Effect: Removes the store record.
     const result = await this.stores.deleteOne({ _id: storeId });
-
     if (result.acknowledged && result.deletedCount === 1) {
       return {};
     } else {
-      // This case is unlikely if findOne succeeded, but good for robustness.
       return { error: `Failed to delete store with ID '${storeId}'.` };
     }
   }
 
-  // 10/thirty/25: Dcprecated method, rplacd by getStoreById
-  // /**
-  //  * _getStore(storeId: String): { name: String, address: String } | { error: String }
-  //  * @requires The `storeId` must exist.
-  //  * @effects Returns the `name` and `address` of the specified store.
-  //  * @returns { name: string, address: string } on success or { error: string } if requirements are not met.
-  //  */
-  // async _getStore(
-  //   { storeId }: { storeId: ID },
-  // ): Promise<{ name: string; address: string } | { error: string }> {
-  //   // Requires: The `storeId` must exist.
-  //   const store = await this.stores.findOne({ _id: storeId });
-  //   if (!store) {
-  //     return { error: `Store with ID '${storeId}' not found.` };
-  //   }
-
-  //   // Effect: Returns the `name` and `address` of the specified store.
-  //   return { name: store.name, address: store.address };
-  // }
-
   /**
-   * _getStoresByName(name: String): Array<{ storeId: ID }>
-   * @effects Returns all matching store IDs for the given name.
+   * _storeExists(storeId: String): (storeId: String)
+   * @requires true
+   * @effects Returns the `storeId` if a store with that ID exists.
+   * @returns An array containing `storeId` if found, otherwise an empty array.
    */
-  async _getStoresByName(
-    { name }: { name: string },
+  async _storeExists(
+    { storeId }: { storeId: ID },
   ): Promise<Array<{ storeId: ID }>> {
-    const stores = await this.stores.find({ name }).project({ _id: 1 })
-      .toArray();
-    return stores.map((s) => ({ storeId: s._id }));
+    const store = await this.stores.findOne({ _id: storeId }, {
+      projection: { _id: 1 },
+    });
+    return store ? [{ storeId: store._id }] : [];
   }
 
   /**
-   * _getStoresByAddress(address: String): Set<ID>
-   * @effects Returns a set of all `storeId`s matching the given `address`.
-   * @returns Set<ID>
-   */
-  // _getStoresByAddress(address: String): [{ storeId: ID }]
-  async _getStoresByAddress(
-    { address }: { address: string },
-  ): Promise<Array<{ storeId: ID }>> {
-    const stores = await this.stores.find({ address }).project({ _id: 1 })
-      .toArray();
-    return stores.map((s) => ({ storeId: s._id }));
-  }
-
-  /**
-   * getStoreById(storeId: String): StoreSummary | { error: String }
+   * _getStoreDetails(storeId: String): (storeId: String, name: String, address: String, ...optionalFields)
    * @requires The `storeId` must exist.
-   * @effects Returns the full store object.
-   * @returns Full store object on success or { error: string } if requirements are not met.
+   * @effects Returns the full store object including its ID.
+   * @returns An array containing a single object with full store details on success.
+   *          Returns an empty array if the `storeId` does not exist.
    */
-  async getStoreById(
+  async _getStoreDetails(
     { storeId }: { storeId: ID },
   ): Promise<
-    {
+    Array<{
       storeId: ID;
       name: string;
       address: string;
@@ -181,15 +143,13 @@ export default class StoreConcept {
       hours?: string;
       specialties?: string[];
       image?: string;
-    } | { error: string }
+    }>
   > {
     const store = await this.stores.findOne({ _id: storeId });
-
     if (!store) {
-      return { error: `Store with ID '${storeId}' not found.` };
+      return [];
     }
-
-    return {
+    return [{
       storeId: store._id,
       name: store.name,
       address: store.address,
@@ -198,45 +158,112 @@ export default class StoreConcept {
       hours: store.hours,
       specialties: store.specialties,
       image: store.image,
-    };
+    }];
   }
 
   /**
-   * listStores(): { items: Array<StoreSummary> } | { error: String }
-   * @effects Returns an array of all stores with full details (except ratings/reviews/tags).
-   * @returns { items: Array<{ storeId, name, address, description, phone, hours, specialties, image }> }
+   * _listAllStores(): (storeId: String, name: String, address: String, ...optionalFields)
+   * @requires true
+   * @effects Returns an array of all stores with full details (excluding ratings/reviews/tags).
+   * @returns An array of objects, each with full store details.
    */
-  async listStores(): Promise<
-    {
-      items: Array<{
-        storeId: ID;
-        name: string;
-        address: string;
-        description?: string;
-        phone?: string;
-        hours?: string;
-        specialties?: string[];
-        image?: string;
-      }>;
-    } | { error: string }
+  async _listAllStores(): Promise<
+    Array<{
+      storeId: ID;
+      name: string;
+      address: string;
+      description?: string;
+      phone?: string;
+      hours?: string;
+      specialties?: string[];
+      image?: string;
+    }>
   > {
     try {
       const stores = await this.stores.find({}).toArray();
-
-      return {
-        items: stores.map((store) => ({
-          storeId: store._id,
-          name: store.name,
-          address: store.address,
-          description: store.description,
-          phone: store.phone,
-          hours: store.hours,
-          specialties: store.specialties,
-          image: store.image,
-        })),
-      };
-    } catch (error) {
-      return { error: `Failed to list stores: ${error}` };
+      return stores.map((store) => ({
+        storeId: store._id,
+        name: store.name,
+        address: store.address,
+        description: store.description,
+        phone: store.phone,
+        hours: store.hours,
+        specialties: store.specialties,
+        image: store.image,
+      }));
+    } catch (e: unknown) {
+      console.error(
+        `Error listing all stores: ${
+          e instanceof Error ? e.message : "Unknown error"
+        }`,
+      );
+      return []; // Return empty array on error for queries
     }
+  }
+
+  /**
+   * _getStoresByName(name: String): (storeId: String, name: String, address: String, ...optionalFields)
+   * @requires true
+   * @effects Returns all matching store IDs and their details for the given name.
+   * @returns An array of objects, each with full store details.
+   */
+  async _getStoresByName(
+    { name }: { name: string },
+  ): Promise<
+    Array<{
+      storeId: ID;
+      name: string;
+      address: string;
+      description?: string;
+      phone?: string;
+      hours?: string;
+      specialties?: string[];
+      image?: string;
+    }>
+  > {
+    const stores = await this.stores.find({ name }).toArray();
+    return stores.map((store) => ({
+      storeId: store._id,
+      name: store.name,
+      address: store.address,
+      description: store.description,
+      phone: store.phone,
+      hours: store.hours,
+      specialties: store.specialties,
+      image: store.image,
+    }));
+  }
+
+  /**
+   * _getStoresByAddress(address: String): (storeId: String, name: String, address: String, ...optionalFields)
+   * @requires true
+   * @effects Returns all matching store IDs and their details for the given address.
+   * @returns An array of objects, each with full store details.
+   */
+  async _getStoresByAddress(
+    { address }: { address: string },
+  ): Promise<
+    Array<{
+      storeId: ID;
+      name: string;
+      address: string;
+      description?: string;
+      phone?: string;
+      hours?: string;
+      specialties?: string[];
+      image?: string;
+    }>
+  > {
+    const stores = await this.stores.find({ address }).toArray();
+    return stores.map((store) => ({
+      storeId: store._id,
+      name: store.name,
+      address: store.address,
+      description: store.description,
+      phone: store.phone,
+      hours: store.hours,
+      specialties: store.specialties,
+      image: store.image,
+    }));
   }
 }

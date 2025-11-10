@@ -1,3 +1,12 @@
+---
+timestamp: 'Fri Nov 07 2025 21:05:13 GMT-0500 (Eastern Standard Time)'
+parent: '[[..\20251107_210513.e9742256.md]]'
+content_id: 6cb47560a8b7e0a794e464ca3eb6394360cddde9ea7457170c9e94e534ac5b09
+---
+
+# file: deno.json
+
+```json
 {
     "imports": {
         "@concepts/": "./src/concepts/",
@@ -26,3 +35,5 @@
     }
 }
     
+
+```

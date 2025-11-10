@@ -1,19 +1,17 @@
-import { Collection, Db } from "mongodb";
+import { Collection, Db } from "npm:mongodb";
 import { Empty, ID } from "@utils/types.ts";
 import { freshID } from "@utils/database.ts";
-import { hash, compare } from "bcrypt"; // Need bcrypt for password hashing
+import { compare, hash } from "bcrypt";
 
-// Declare collection prefix, use concept name
 const PREFIX = "User" + ".";
 
-// The state of the User concept:
 /**
  * Each User is represented by:
- * - `_id`: ID (userId)
- * - `username`: string
- * - `email`: string
- * - `passwordHash`: string
- * - `creationDate`: Date
+ * @property _id The unique identifier for the user (userId).
+ * @property username A unique username for login.
+ * @property email A unique email for login and communication.
+ * @property passwordHash The hashed password for security.
+ * @property creationDate The date the user account was created.
  */
 interface UserDoc {
   _id: ID; // Mapped from userId in spec
@@ -23,6 +21,12 @@ interface UserDoc {
   creationDate: Date;
 }
 
+/**
+ * @concept User
+ * @purpose To manage user accounts, including registration, authentication, and basic profile information.
+ * @principle User accounts are fundamental for personalized interactions like leaving reviews or setting language preferences.
+ *            Other concepts interact with `User` primarily to identify who is performing an action or whose preferences are being queried.
+ */
 export default class UserConcept {
   private users: Collection<UserDoc>;
 
@@ -31,16 +35,10 @@ export default class UserConcept {
   }
 
   /**
-   * @concept User
-   * @purpose To manage user accounts, including registration, authentication, and basic profile information.
-   * @principle User accounts are fundamental for personalized interactions like leaving reviews or setting language preferences.
-   *            Other concepts interact with `User` primarily to identify who is performing an action or whose preferences are being queried.
-   */
-
-  /**
-   * registerUser(username: String, email: String, password: String): userId
-   * @requires The `username` and `email` must not already exist in the system. The `password` should meet security criteria (e.g., complexity, length), though specific validation logic resides here.
+   * registerUser(username: String, email: String, password: String): { userId: ID } | { error: String }
+   * @requires The `username` and `email` must not already exist in the system. The `password` should meet security criteria.
    * @effects Creates a new user account, hashes the password, and returns the unique `userId`.
+   * @returns { userId: ID } on success or { error: string } if requirements are not met or an internal error occurs.
    */
   async registerUser(
     { username, email, password }: {
@@ -49,7 +47,6 @@ export default class UserConcept {
       password: string;
     },
   ): Promise<{ userId: ID } | { error: string }> {
-    // Requires: username and email must not already exist
     const existingUserByUsername = await this.users.findOne({ username });
     if (existingUserByUsername) {
       return { error: `Username '${username}' already exists.` };
@@ -60,39 +57,35 @@ export default class UserConcept {
       return { error: `Email '${email}' already exists.` };
     }
 
-    // Password complexity check (placeholder, can be expanded)
     if (password.length < 8) {
       return { error: "Password must be at least 8 characters long." };
     }
 
-    // Effect: Hash the password
-    // Using Deno.env.get for salt rounds, defaulting to 10 if not set.
-    // const saltRounds = parseInt(Deno.env.get("BCRYPT_SALT_ROUNDS") || "10", 10);
+    try {
+      const passwordHash = await hash(password);
+      const newUserId = freshID();
+      const newUser: UserDoc = {
+        _id: newUserId,
+        username,
+        email,
+        passwordHash,
+        creationDate: new Date(),
+      };
 
-    // 10/19/2025 EDIT: Using Deno's bcrypt which does not require salt rounds parameter. Commented out saltRounds line above.
-    // Removed saltRounds from hash function call below.
-    const passwordHash = await hash(password);
-
-    // Effect: Creates a new user account
-    const newUserId = freshID();
-    const newUser: UserDoc = {
-      _id: newUserId,
-      username,
-      email,
-      passwordHash,
-      creationDate: new Date(),
-    };
-
-    await this.users.insertOne(newUser);
-
-    // Effect: returns the unique `userId`
-    return { userId: newUserId };
+      await this.users.insertOne(newUser);
+      return { userId: newUserId };
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(`Error registering user: ${message}`);
+      return { error: `Internal server error: ${message}` };
+    }
   }
 
   /**
-   * authenticateUser(usernameOrEmail: String, password: String): userId
+   * authenticateUser(usernameOrEmail: String, password: String): { userId: ID } | { error: String }
    * @requires A user with the provided `usernameOrEmail` must exist. The provided `password` must match the stored `passwordHash`.
    * @effects Authenticates the user and returns their `userId`. Returns an error if authentication fails.
+   * @returns { userId: ID } on success or { error: string } if authentication fails.
    */
   async authenticateUser(
     { usernameOrEmail, password }: {
@@ -100,7 +93,6 @@ export default class UserConcept {
       password: string;
     },
   ): Promise<{ userId: ID } | { error: string }> {
-    // Requires: A user with the provided usernameOrEmail must exist.
     const user = await this.users.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
@@ -109,107 +101,135 @@ export default class UserConcept {
       return { error: "Invalid credentials." };
     }
 
-    // Requires: The provided password must match the stored passwordHash.
     const passwordMatches = await compare(password, user.passwordHash);
 
     if (!passwordMatches) {
       return { error: "Invalid credentials." };
     }
-
-    // Effect: Authenticates the user and returns their `userId`.
     return { userId: user._id };
   }
 
   /**
-   * getUserById(userId: String): { username: String, email: String, creationDate: Timestamp }
-   * @requires The `userId` must exist.
-   * @effects Returns basic non-sensitive user profile information. Returns an error if the user is not found.
-   */
-  async getUserById(
-    { userId }: { userId: ID },
-  ): Promise<{ username: string; email: string; creationDate: Date } | {
-    error: string;
-  }> {
-    // Requires: The `userId` must exist.
-    const user = await this.users.findOne({ _id: userId });
-
-    if (!user) {
-      return { error: `User with ID '${userId}' not found.` };
-    }
-
-    // Effect: Returns basic non-sensitive user profile information.
-    return {
-      username: user.username,
-      email: user.email,
-      creationDate: user.creationDate,
-    };
-  }
-
-  /**
-   * updateUserEmail(userId: String, newEmail: String)
+   * updateUserEmail(userId: String, newEmail: String): {} | { error: String }
    * @requires The `userId` must exist. The `newEmail` must not already be in use by another user.
    * @effects Updates the user's email address. Returns an error if requirements are not met.
+   * @returns {} on success or { error: string } if requirements are not met or an internal error occurs.
    */
   async updateUserEmail(
     { userId, newEmail }: { userId: ID; newEmail: string },
   ): Promise<Empty | { error: string }> {
-    // Requires: The `userId` must exist.
     const userToUpdate = await this.users.findOne({ _id: userId });
     if (!userToUpdate) {
       return { error: `User with ID '${userId}' not found.` };
     }
 
-    // Requires: The `newEmail` must not already be in use by another user.
     const existingUserWithNewEmail = await this.users.findOne({
       email: newEmail,
       _id: { $ne: userId }, // Exclude the current user
     });
     if (existingUserWithNewEmail) {
-      return { error: `Email '${newEmail}' is already in use by another user.` };
+      return {
+        error: `Email '${newEmail}' is already in use by another user.`,
+      };
     }
-    
-    // If the new email is the same as the current email, do nothing and succeed.
+
     if (userToUpdate.email === newEmail) {
-        return {};
+      return {};
     }
 
-    // Effect: Updates the user's email address.
-    const updateResult = await this.users.updateOne(
-      { _id: userId },
-      { $set: { email: newEmail } },
-    );
+    try {
+      const updateResult = await this.users.updateOne(
+        { _id: userId },
+        { $set: { email: newEmail } },
+      );
 
-    if (updateResult.modifiedCount === 0) {
-      // This case should ideally not be reached if previous checks pass and email is different,
-      // but good for robustness if the email was somehow already the same after all.
-      return { error: "Failed to update email or email was already the same." };
+      if (updateResult.modifiedCount === 0) {
+        return { error: "Failed to update email." };
+      }
+      return {};
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(`Error updating user email for '${userId}': ${message}`);
+      return { error: `Internal server error: ${message}` };
     }
-
-    return {}; // Success
   }
 
   /**
-   * deleteUser(userId: String)
+   * deleteUser(userId: String): {} | { error: String }
    * @requires The `userId` must exist.
    * @effects Deletes the user account. This action should ideally trigger cascades via syncs to clean up associated data in other concepts.
+   * @returns {} on success or { error: string } if requirements are not met.
    */
   async deleteUser(
     { userId }: { userId: ID },
   ): Promise<Empty | { error: string }> {
-    // Requires: The `userId` must exist.
     const userToDelete = await this.users.findOne({ _id: userId });
     if (!userToDelete) {
       return { error: `User with ID '${userId}' not found.` };
     }
 
-    // Effect: Deletes the user account.
-    const deleteResult = await this.users.deleteOne({ _id: userId });
-
-    if (deleteResult.deletedCount === 0) {
-      return { error: `Failed to delete user with ID '${userId}'.` };
+    try {
+      const deleteResult = await this.users.deleteOne({ _id: userId });
+      if (deleteResult.deletedCount === 0) {
+        return { error: `Failed to delete user with ID '${userId}'.` };
+      }
+      return {};
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      console.error(`Error deleting user '${userId}': ${message}`);
+      return { error: `Internal server error: ${message}` };
     }
-
-    return {}; // Success
   }
 
+  /**
+   * _userExists(userId: String): (userId: String)
+   * @requires true
+   * @effects Returns the `userId` if a user with that ID exists.
+   * @returns An array containing `userId` if found, otherwise an empty array.
+   */
+  async _userExists(
+    { userId }: { userId: ID },
+  ): Promise<Array<{ userId: ID }>> {
+    const user = await this.users.findOne({ _id: userId }, {
+      projection: { _id: 1 },
+    });
+    return user ? [{ userId: user._id }] : [];
+  }
+
+  /**
+   * _getUserDetails(userId: String): (username: String, email: String, creationDate: Timestamp)
+   * @requires The `userId` must exist.
+   * @effects Returns basic non-sensitive user profile information.
+   * @returns An array containing a single object with username, email, and creationDate on success.
+   *          Returns an empty array if the `userId` does not exist.
+   */
+  async _getUserDetails(
+    { userId }: { userId: ID },
+  ): Promise<Array<{ username: string; email: string; creationDate: Date }>> {
+    const user = await this.users.findOne({ _id: userId });
+    if (!user) {
+      return [];
+    }
+    return [{
+      username: user.username,
+      email: user.email,
+      creationDate: user.creationDate,
+    }];
+  }
+
+  /**
+   * _getUserByUsernameOrEmail(usernameOrEmail: String): (userId: String)
+   * @requires true
+   * @effects Returns the `userId` if a user matches the `usernameOrEmail`.
+   * @returns An array containing `userId` if found, otherwise an empty array.
+   */
+  async _getUserByUsernameOrEmail(
+    { usernameOrEmail }: { usernameOrEmail: string },
+  ): Promise<Array<{ userId: ID }>> {
+    const user = await this.users.findOne(
+      { $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }] },
+      { projection: { _id: 1 } },
+    );
+    return user ? [{ userId: user._id }] : [];
+  }
 }
