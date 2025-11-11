@@ -1290,4 +1290,415 @@ Overall, I had fun making this web app and it really taught me the flow/process 
 
 # final video link 
 
-https://streamable.com/655329
+https://streamable.com/hixrnu
+
+# console logs
+
+2025-11-11T04:08:35.383929871Z 
+2025-11-11T04:08:35.383937732Z 🚀 Requesting server listening for POST requests at base path of /api/*
+2025-11-11T04:08:35.384761284Z Listening on http://0.0.0.0:10000/ (http://localhost:10000/)
+2025-11-11T04:08:43.762697Z ==> Your service is live 🎉
+2025-11-11T04:08:43.800618218Z ==> 
+2025-11-11T04:08:43.836174834Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:08:43.873010872Z ==> 
+2025-11-11T04:08:43.914183679Z ==> Available at your primary URL https://chinese-grocer-backend.onrender.com
+2025-11-11T04:08:44.358697305Z ==> 
+2025-11-11T04:08:44.738975965Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:12:13.018396375Z [Requesting] Received request for path: /User/registerUser
+2025-11-11T04:12:13.109353898Z 
+2025-11-11T04:12:13.109390679Z Requesting.request {
+2025-11-11T04:12:13.109396879Z   username: 'joezhao456',
+2025-11-11T04:12:13.109401519Z   email: 'test@example22.com',
+2025-11-11T04:12:13.109406339Z   password: '12345678',
+2025-11-11T04:12:13.109410829Z   path: '/User/registerUser'
+2025-11-11T04:12:13.10942136Z } => { request: '019a711d-3d5a-7f2d-9b7c-a48e1f1f9cdb' }
+2025-11-11T04:12:13.10942641Z 
+2025-11-11T04:12:13.301569156Z Download https://deno.land/x/bcrypt@v0.4.1/src/worker.ts
+2025-11-11T04:12:14.461959529Z 
+2025-11-11T04:12:14.461998431Z User.registerUser {
+2025-11-11T04:12:14.462004081Z   username: 'joezhao456',
+2025-11-11T04:12:14.462007861Z   email: 'test@example22.com',
+2025-11-11T04:12:14.462011441Z   password: '12345678'
+2025-11-11T04:12:14.462015571Z } => { userId: '019a711d-42b7-7aa1-9702-b6224b4731e9' }
+2025-11-11T04:12:14.462018941Z 
+2025-11-11T04:12:14.55685026Z 
+2025-11-11T04:12:14.556881661Z Requesting.respond {
+2025-11-11T04:12:14.556888601Z   request: '019a711d-3d5a-7f2d-9b7c-a48e1f1f9cdb',
+2025-11-11T04:12:14.556894641Z   userId: '019a711d-42b7-7aa1-9702-b6224b4731e9'
+2025-11-11T04:12:14.556899861Z } => { request: '019a711d-3d5a-7f2d-9b7c-a48e1f1f9cdb' }
+2025-11-11T04:12:14.556905142Z 
+2025-11-11T04:12:23.038071099Z [Requesting] Received request for path: /User/authenticateUser
+2025-11-11T04:12:23.1064279Z 
+2025-11-11T04:12:23.106476131Z Requesting.request {
+2025-11-11T04:12:23.106501132Z   usernameOrEmail: 'joezhao456',
+2025-11-11T04:12:23.106504142Z   password: '12345678',
+2025-11-11T04:12:23.106506622Z   path: '/User/authenticateUser'
+2025-11-11T04:12:23.106510152Z } => { request: '019a711d-647e-7427-b55d-6c2eed2969d8' }
+2025-11-11T04:12:23.106512492Z 
+2025-11-11T04:12:23.988694522Z 
+2025-11-11T04:12:23.988723833Z User.authenticateUser { usernameOrEmail: 'joezhao456', password: '12345678' } => { userId: '019a711d-42b7-7aa1-9702-b6224b4731e9' }
+2025-11-11T04:12:23.988729603Z 
+2025-11-11T04:12:24.057526066Z 
+2025-11-11T04:12:24.057555647Z Requesting.respond {
+2025-11-11T04:12:24.057559317Z   request: '019a711d-647e-7427-b55d-6c2eed2969d8',
+2025-11-11T04:12:24.057562107Z   userId: '019a711d-42b7-7aa1-9702-b6224b4731e9'
+2025-11-11T04:12:24.057564297Z } => { request: '019a711d-647e-7427-b55d-6c2eed2969d8' }
+2025-11-11T04:12:24.057566307Z 
+2025-11-11T04:13:42.555646192Z ==> Detected service running on port 10000
+2025-11-11T04:13:42.739710628Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-11-11T04:14:48.57913928Z 
+2025-11-11T04:14:48.57916504Z Requesting.request {
+2025-11-11T04:14:48.57917107Z   usernameOrEmail: 'joezhao4567',
+2025-11-11T04:14:48.579175671Z   password: '12345678',
+2025-11-11T04:14:48.579180501Z   path: '/User/authenticateUser'
+2025-11-11T04:14:48.579185071Z } => { request: '019a711f-9cbf-720d-a056-7da7bef3843d' }
+2025-11-11T04:14:48.579187811Z 
+2025-11-11T04:14:49.295988595Z 
+2025-11-11T04:14:49.296012216Z User.authenticateUser { usernameOrEmail: 'joezhao4567', password: '12345678' } => { userId: '019a711f-8418-7240-aab8-f13134fb9f98' }
+2025-11-11T04:14:49.296016466Z 
+2025-11-11T04:14:49.363149994Z 
+2025-11-11T04:14:49.363174134Z Requesting.respond {
+2025-11-11T04:14:49.363181004Z   request: '019a711f-9cbf-720d-a056-7da7bef3843d',
+2025-11-11T04:14:49.363186445Z   userId: '019a711f-8418-7240-aab8-f13134fb9f98'
+2025-11-11T04:14:49.363190795Z } => { request: '019a711f-9cbf-720d-a056-7da7bef3843d' }
+2025-11-11T04:14:49.363195065Z 
+2025-11-11T04:15:39.120755343Z [Requesting] Received request for path: /Store/createStore
+2025-11-11T04:15:39.188697143Z 
+2025-11-11T04:15:39.188731374Z Requesting.request {
+2025-11-11T04:15:39.188737824Z   name: "bobby's store 222",
+2025-11-11T04:15:39.188741744Z   address: '155 Bay State Road, Boston, MA, 02215',
+2025-11-11T04:15:39.188745004Z   description: 'sells bobbies.',
+2025-11-11T04:15:39.188765545Z   tags: [ 'pet-friendly', 'second floor', 'filthy' ],
+2025-11-11T04:15:39.188767775Z   phone: '8732183712',
+2025-11-11T04:15:39.188769565Z   hours: '9:00AM - 9:00PM',
+2025-11-11T04:15:39.188771305Z   path: '/Store/createStore'
+2025-11-11T04:15:39.188773025Z } => { request: '019a7120-6270-7030-afdb-8d5a3f99aaa2' }
+2025-11-11T04:15:39.188774595Z 
+2025-11-11T04:15:39.320593132Z 
+2025-11-11T04:15:39.320630073Z Store.createStore {
+2025-11-11T04:15:39.320634884Z   name: "bobby's store 222",
+2025-11-11T04:15:39.320638714Z   address: '155 Bay State Road, Boston, MA, 02215'
+2025-11-11T04:15:39.320641324Z } => { storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f' }
+2025-11-11T04:15:39.320643974Z 
+2025-11-11T04:15:39.387773601Z 
+2025-11-11T04:15:39.387812882Z Requesting.respond {
+2025-11-11T04:15:39.387817993Z   request: '019a7120-6270-7030-afdb-8d5a3f99aaa2',
+2025-11-11T04:15:39.387821153Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f'
+2025-11-11T04:15:39.387824083Z } => { request: '019a7120-6270-7030-afdb-8d5a3f99aaa2' }
+2025-11-11T04:15:39.387826763Z 
+2025-11-11T04:15:39.621642337Z [Requesting] Received request for path: /Tagging/addTag
+2025-11-11T04:15:39.688019984Z 
+2025-11-11T04:15:39.688047915Z Requesting.request {
+2025-11-11T04:15:39.688052035Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:15:39.688055065Z   tag: 'pet-friendly',
+2025-11-11T04:15:39.688057895Z   path: '/Tagging/addTag'
+2025-11-11T04:15:39.688060355Z } => { request: '019a7120-6465-75f8-a7b6-5cb2b4504f99' }
+2025-11-11T04:15:39.688062505Z 
+2025-11-11T04:15:39.753886027Z 
+2025-11-11T04:15:39.753906457Z Tagging.addTag {
+2025-11-11T04:15:39.753910947Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:15:39.753914877Z   tag: 'pet-friendly'
+2025-11-11T04:15:39.753917677Z } => {}
+2025-11-11T04:15:39.753920277Z 
+2025-11-11T04:15:39.819294127Z 
+2025-11-11T04:15:39.819308507Z Requesting.respond { request: '019a7120-6465-75f8-a7b6-5cb2b4504f99', status: 'success' } => { request: '019a7120-6465-75f8-a7b6-5cb2b4504f99' }
+2025-11-11T04:15:39.819310877Z 
+2025-11-11T04:15:39.911748961Z [Requesting] Received request for path: /Tagging/addTag
+2025-11-11T04:15:39.976938855Z 
+2025-11-11T04:15:39.976959986Z Requesting.request {
+2025-11-11T04:15:39.976965315Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:15:39.976968456Z   tag: 'second floor',
+2025-11-11T04:15:39.976971536Z   path: '/Tagging/addTag'
+2025-11-11T04:15:39.976974276Z } => { request: '019a7120-6587-76c4-a659-802d6d6969d2' }
+2025-11-11T04:15:39.976976486Z 
+2025-11-11T04:15:40.043967529Z 
+2025-11-11T04:15:40.04399093Z Tagging.addTag {
+2025-11-11T04:15:40.04399478Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:15:40.0439978Z   tag: 'second floor'
+2025-11-11T04:15:40.044011961Z } => {}
+2025-11-11T04:15:40.044014331Z 
+2025-11-11T04:15:40.109493733Z 
+2025-11-11T04:15:40.109513243Z Requesting.respond { request: '019a7120-6587-76c4-a659-802d6d6969d2', status: 'success' } => { request: '019a7120-6587-76c4-a659-802d6d6969d2' }
+2025-11-11T04:15:40.109515993Z 
+2025-11-11T04:15:40.215735166Z [Requesting] Received request for path: /Tagging/addTag
+2025-11-11T04:15:40.280059467Z 
+2025-11-11T04:15:40.280080667Z Requesting.request {
+2025-11-11T04:15:40.280084207Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:15:40.280086807Z   tag: 'filthy',
+2025-11-11T04:15:40.280089907Z   path: '/Tagging/addTag'
+2025-11-11T04:15:40.280145529Z } => { request: '019a7120-66b6-7e1d-b827-48615d7d188e' }
+2025-11-11T04:15:40.280161389Z 
+2025-11-11T04:15:40.346716101Z 
+2025-11-11T04:15:40.346772782Z Tagging.addTag { storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f', tag: 'filthy' } => {}
+2025-11-11T04:15:40.346776032Z 
+2025-11-11T04:15:40.412563823Z 
+2025-11-11T04:15:40.412596674Z Requesting.respond { request: '019a7120-66b6-7e1d-b827-48615d7d188e', status: 'success' } => { request: '019a7120-66b6-7e1d-b827-48615d7d188e' }
+2025-11-11T04:15:40.412599714Z 
+2025-11-11T04:16:00.063301847Z [Requesting] Received request for path: /Review/createReview
+2025-11-11T04:16:00.119577576Z 
+2025-11-11T04:16:00.119611267Z Requesting.request {
+2025-11-11T04:16:00.119618367Z   userId: '019a711f-8418-7240-aab8-f13134fb9f98',
+2025-11-11T04:16:00.119622628Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:16:00.119626868Z   text: 'ew',
+2025-11-11T04:16:00.119631048Z   rating: 3,
+2025-11-11T04:16:00.119635398Z   tags: [ 'Great Prices', 'Live Seafood', 'Clean Store' ],
+2025-11-11T04:16:00.119641248Z   path: '/Review/createReview'
+2025-11-11T04:16:00.119645608Z } => { request: '019a7120-b433-7570-887d-fd99cae556fa' }
+2025-11-11T04:16:00.119649318Z 
+2025-11-11T04:16:00.315744075Z 
+2025-11-11T04:16:00.315774296Z Review.createReview {
+2025-11-11T04:16:00.315780196Z   userId: '019a711f-8418-7240-aab8-f13134fb9f98',
+2025-11-11T04:16:00.315785236Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:16:00.315789506Z   rating: 3,
+2025-11-11T04:16:00.315794336Z   text: 'ew'
+2025-11-11T04:16:00.315799016Z } => { reviewId: '019a7120-b4f7-7519-a4b2-279570668e0e' }
+2025-11-11T04:16:00.315803487Z 
+2025-11-11T04:16:00.380529878Z [Requesting] Error processing request: Cannot convert a Symbol value to a number
+2025-11-11T04:16:07.199144809Z [Requesting] Received request for path: /Review/createReview
+2025-11-11T04:16:07.263339776Z 
+2025-11-11T04:16:07.263381447Z Requesting.request {
+2025-11-11T04:16:07.263387077Z   userId: '019a711f-8418-7240-aab8-f13134fb9f98',
+2025-11-11T04:16:07.263390737Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:16:07.263394267Z   text: 'ew',
+2025-11-11T04:16:07.263397757Z   rating: 3,
+2025-11-11T04:16:07.263401277Z   tags: [ 'Great Prices', 'Live Seafood', 'Clean Store' ],
+2025-11-11T04:16:07.263406368Z   path: '/Review/createReview'
+2025-11-11T04:16:07.263412448Z } => { request: '019a7120-d01f-7679-b5d6-05a3cf4c44ab' }
+2025-11-11T04:16:07.263417898Z 
+2025-11-11T04:16:07.448664666Z 
+2025-11-11T04:16:07.448684787Z Review.createReview {
+2025-11-11T04:16:07.448690317Z   userId: '019a711f-8418-7240-aab8-f13134fb9f98',
+2025-11-11T04:16:07.448694087Z   storeId: '019a7120-62f4-74a4-a2a7-ae41bcca046f',
+2025-11-11T04:16:07.448697887Z   rating: 3,
+2025-11-11T04:16:07.448701977Z   text: 'ew'
+2025-11-11T04:16:07.448705717Z } => { reviewId: '019a7120-d0d9-750e-a2dc-cdd2031aa90c' }
+2025-11-11T04:16:07.448709277Z 
+2025-11-11T04:16:07.509557172Z [Requesting] Error processing request: Cannot convert a Symbol value to a number
+2025-11-11T04:23:59.858069693Z ==> Deploying...
+2025-11-11T04:24:10.93286268Z Task start deno run --allow-net --allow-write --allow-read --allow-sys --allow-env src/main.ts
+2025-11-11T04:24:14.656227275Z 
+2025-11-11T04:24:14.656262448Z Requesting concept initialized with a timeout of 10000ms.
+2025-11-11T04:24:14.65986076Z 
+2025-11-11T04:24:14.659874531Z Registering concept passthrough routes.
+2025-11-11T04:24:14.659949335Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/createSurvey
+2025-11-11T04:24:14.659953225Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/addQuestion
+2025-11-11T04:24:14.659970426Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/submitResponse
+2025-11-11T04:24:14.659979897Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/updateResponse
+2025-11-11T04:24:14.659985887Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getSurveyQuestions
+2025-11-11T04:24:14.660036641Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getSurveyResponses
+2025-11-11T04:24:14.660051671Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getRespondentAnswers
+2025-11-11T04:24:14.660123266Z   -> /api/Rating/_getRating
+2025-11-11T04:24:14.660201211Z   -> /api/Review/_getReviewByIdFull
+2025-11-11T04:24:14.660206751Z   -> /api/Review/_getReviewsForStoreFull
+2025-11-11T04:24:14.660306397Z   -> /api/Review/_getReviewsByUserFull
+2025-11-11T04:24:14.660317738Z   -> /api/Store/_getStoreDetails
+2025-11-11T04:24:14.660320478Z   -> /api/Store/_listAllStores
+2025-11-11T04:24:14.660323068Z   -> /api/Store/_getStoresByName
+2025-11-11T04:24:14.660325728Z   -> /api/Store/_getStoresByAddress
+2025-11-11T04:24:14.660408164Z   -> /api/Tagging/_getStoresByTag
+2025-11-11T04:24:14.660413384Z   -> /api/Tagging/_getTagsForStore
+2025-11-11T04:24:14.660470788Z   -> /api/User/_getUserDetails
+2025-11-11T04:24:14.660475958Z FIX: Please verify routes in: ./src/concepts/Requesting/passthrough.ts
+2025-11-11T04:24:14.660478418Z 
+2025-11-11T04:24:14.660480888Z 🚀 Requesting server listening for POST requests at base path of /api/*
+2025-11-11T04:24:14.661538173Z Listening on http://0.0.0.0:10000/ (http://localhost:10000/)
+2025-11-11T04:24:22.162928379Z ==> Your service is live 🎉
+2025-11-11T04:24:22.866673194Z ==> 
+2025-11-11T04:24:23.196272389Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:24:23.237869036Z ==> 
+2025-11-11T04:24:23.282708533Z ==> Available at your primary URL https://chinese-grocer-backend.onrender.com
+2025-11-11T04:24:23.31750396Z ==> 
+2025-11-11T04:24:23.352412867Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:27:15.29326658Z ==> Deploying...
+2025-11-11T04:27:27.196636857Z Task start deno run --allow-net --allow-write --allow-read --allow-sys --allow-env src/main.ts
+2025-11-11T04:27:31.006216934Z 
+2025-11-11T04:27:31.006230444Z Requesting concept initialized with a timeout of 10000ms.
+2025-11-11T04:27:31.010011014Z 
+2025-11-11T04:27:31.010027265Z Registering concept passthrough routes.
+2025-11-11T04:27:31.010138763Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/createSurvey
+2025-11-11T04:27:31.010157634Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/addQuestion
+2025-11-11T04:27:31.010172935Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/submitResponse
+2025-11-11T04:27:31.010178666Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/updateResponse
+2025-11-11T04:27:31.010250141Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getSurveyQuestions
+2025-11-11T04:27:31.010255641Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getSurveyResponses
+2025-11-11T04:27:31.010309225Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getRespondentAnswers
+2025-11-11T04:27:31.010375219Z   -> /api/Rating/_getRating
+2025-11-11T04:27:31.010472817Z   -> /api/Review/_getReviewByIdFull
+2025-11-11T04:27:31.010478217Z   -> /api/Review/_getReviewsForStoreFull
+2025-11-11T04:27:31.010480597Z   -> /api/Review/_getReviewsByUserFull
+2025-11-11T04:27:31.010499358Z   -> /api/Store/_getStoreDetails
+2025-11-11T04:27:31.01051959Z   -> /api/Store/_listAllStores
+2025-11-11T04:27:31.010531111Z   -> /api/Store/_getStoresByName
+2025-11-11T04:27:31.010534711Z   -> /api/Store/_getStoresByAddress
+2025-11-11T04:27:31.010593035Z   -> /api/Tagging/_getStoresByTag
+2025-11-11T04:27:31.010601596Z   -> /api/Tagging/_getTagsForStore
+2025-11-11T04:27:31.010653279Z   -> /api/User/_getUserDetails
+2025-11-11T04:27:31.01065723Z FIX: Please verify routes in: ./src/concepts/Requesting/passthrough.ts
+2025-11-11T04:27:31.01066209Z 
+2025-11-11T04:27:31.01066477Z 🚀 Requesting server listening for POST requests at base path of /api/*
+2025-11-11T04:27:31.011625488Z Listening on http://0.0.0.0:10000/ (http://localhost:10000/)
+2025-11-11T04:27:36.637099342Z ==> Your service is live 🎉
+2025-11-11T04:27:36.675669389Z ==> 
+2025-11-11T04:27:36.710878957Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:27:36.746429724Z ==> 
+2025-11-11T04:27:36.79435663Z ==> Available at your primary URL https://chinese-grocer-backend.onrender.com
+2025-11-11T04:27:36.845470706Z ==> 
+2025-11-11T04:27:36.884668623Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:29:17.815870122Z [Requesting] Received request for path: /User/registerUser
+2025-11-11T04:29:17.89901099Z 
+2025-11-11T04:29:17.899043372Z Requesting.request {
+2025-11-11T04:29:17.899048983Z   username: 'joezhao123',
+2025-11-11T04:29:17.899053603Z   email: 'test@example2222.com',
+2025-11-11T04:29:17.899057723Z   password: '12345678',
+2025-11-11T04:29:17.899062024Z   path: '/User/registerUser'
+2025-11-11T04:29:17.899067054Z } => { request: '019a712c-e079-7747-83e9-8606b3a4b915' }
+2025-11-11T04:29:17.899071174Z 
+2025-11-11T04:29:18.111214146Z Download https://deno.land/x/bcrypt@v0.4.1/src/worker.ts
+2025-11-11T04:29:19.165559298Z 
+2025-11-11T04:29:19.165597181Z User.registerUser {
+2025-11-11T04:29:19.165603271Z   username: 'joezhao123',
+2025-11-11T04:29:19.165607602Z   email: 'test@example2222.com',
+2025-11-11T04:29:19.165615532Z   password: '12345678'
+2025-11-11T04:29:19.165620352Z } => { userId: '019a712c-e51f-7911-9463-752b2e980732' }
+2025-11-11T04:29:19.165624003Z 
+2025-11-11T04:29:19.233082405Z 
+2025-11-11T04:29:19.233107196Z Requesting.respond {
+2025-11-11T04:29:19.233111677Z   request: '019a712c-e079-7747-83e9-8606b3a4b915',
+2025-11-11T04:29:19.233115377Z   userId: '019a712c-e51f-7911-9463-752b2e980732'
+2025-11-11T04:29:19.233118317Z } => { request: '019a712c-e079-7747-83e9-8606b3a4b915' }
+2025-11-11T04:29:19.233121077Z 
+2025-11-11T04:29:27.492322052Z [Requesting] Received request for path: /User/authenticateUser
+2025-11-11T04:29:27.559143558Z 
+2025-11-11T04:29:27.55917268Z Requesting.request {
+2025-11-11T04:29:27.559190822Z   usernameOrEmail: 'joezhao123',
+2025-11-11T04:29:27.559194332Z   password: '12345678',
+2025-11-11T04:29:27.559197462Z   path: '/User/authenticateUser'
+2025-11-11T04:29:27.559201322Z } => { request: '019a712d-0644-70e4-a003-f839546e7dc4' }
+2025-11-11T04:29:27.559204022Z 
+2025-11-11T04:29:28.406630526Z 
+2025-11-11T04:29:28.406654488Z User.authenticateUser { usernameOrEmail: 'joezhao123', password: '12345678' } => { userId: '019a712c-e51f-7911-9463-752b2e980732' }
+2025-11-11T04:29:28.406703331Z 
+2025-11-11T04:29:28.473667208Z 
+2025-11-11T04:29:28.473685269Z Requesting.respond {
+2025-11-11T04:29:28.473688819Z   request: '019a712d-0644-70e4-a003-f839546e7dc4',
+2025-11-11T04:29:28.47369184Z   userId: '019a712c-e51f-7911-9463-752b2e980732'
+2025-11-11T04:29:28.47369426Z } => { request: '019a712d-0644-70e4-a003-f839546e7dc4' }
+2025-11-11T04:29:28.47369643Z 
+2025-11-11T04:29:42.384516985Z ==> Deploying...
+2025-11-11T04:29:52.172100418Z Task start deno run --allow-net --allow-write --allow-read --allow-sys --allow-env src/main.ts
+2025-11-11T04:29:55.790499821Z 
+2025-11-11T04:29:55.790534613Z Requesting concept initialized with a timeout of 10000ms.
+2025-11-11T04:29:55.794600191Z 
+2025-11-11T04:29:55.794616922Z Registering concept passthrough routes.
+2025-11-11T04:29:55.794731869Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/createSurvey
+2025-11-11T04:29:55.794737689Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/addQuestion
+2025-11-11T04:29:55.794743709Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/submitResponse
+2025-11-11T04:29:55.794769601Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/updateResponse
+2025-11-11T04:29:55.794798983Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getSurveyQuestions
+2025-11-11T04:29:55.794831475Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getSurveyResponses
+2025-11-11T04:29:55.7949212Z WARNING - UNVERIFIED ROUTE: /api/LikertSurvey/_getRespondentAnswers
+2025-11-11T04:29:55.794970183Z   -> /api/Rating/_getRating
+2025-11-11T04:29:55.795052698Z   -> /api/Review/_getReviewByIdFull
+2025-11-11T04:29:55.795057208Z   -> /api/Review/_getReviewsForStoreFull
+2025-11-11T04:29:55.795066719Z   -> /api/Review/_getReviewsByUserFull
+2025-11-11T04:29:55.795139453Z   -> /api/Store/_getStoreDetails
+2025-11-11T04:29:55.795144314Z   -> /api/Store/_listAllStores
+2025-11-11T04:29:55.795150624Z   -> /api/Store/_getStoresByName
+2025-11-11T04:29:55.795153734Z   -> /api/Store/_getStoresByAddress
+2025-11-11T04:29:55.795195297Z   -> /api/Tagging/_getStoresByTag
+2025-11-11T04:29:55.795199637Z   -> /api/Tagging/_getTagsForStore
+2025-11-11T04:29:55.795287553Z   -> /api/User/_getUserDetails
+2025-11-11T04:29:55.795292693Z FIX: Please verify routes in: ./src/concepts/Requesting/passthrough.ts
+2025-11-11T04:29:55.795295153Z 
+2025-11-11T04:29:55.795297953Z 🚀 Requesting server listening for POST requests at base path of /api/*
+2025-11-11T04:29:55.796441443Z Listening on http://0.0.0.0:10000/ (http://localhost:10000/)
+2025-11-11T04:30:03.814801765Z ==> Your service is live 🎉
+2025-11-11T04:30:03.866421892Z ==> 
+2025-11-11T04:30:04.507939092Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:30:04.946611358Z ==> 
+2025-11-11T04:30:05.010598363Z ==> Available at your primary URL https://chinese-grocer-backend.onrender.com
+2025-11-11T04:30:05.064811089Z ==> 
+2025-11-11T04:30:05.122388225Z ==> ///////////////////////////////////////////////////////////
+2025-11-11T04:30:13.21157944Z [Requesting] Received request for path: /Store/createStore
+2025-11-11T04:30:13.282490645Z 
+2025-11-11T04:30:13.282519487Z Requesting.request {
+2025-11-11T04:30:13.282524607Z   name: 'store1222',
+2025-11-11T04:30:13.282530008Z   address: '155 Bay State Road, Boston, MA, 02215',
+2025-11-11T04:30:13.282532908Z   description: 'hello',
+2025-11-11T04:30:13.282536208Z   tags: [ 'smelly', 'big', 'slippery' ],
+2025-11-11T04:30:13.282539138Z   phone: '8732183712',
+2025-11-11T04:30:13.282542438Z   hours: '9:00AM - 9:00PM',
+2025-11-11T04:30:13.282545249Z   path: '/Store/createStore'
+2025-11-11T04:30:13.282548189Z } => { request: '019a712d-b8db-743f-b2ec-51eaae7447a1' }
+2025-11-11T04:30:13.282550869Z 
+2025-11-11T04:30:13.414332189Z 
+2025-11-11T04:30:13.414360811Z Store.createStore { name: 'store1222', address: '155 Bay State Road, Boston, MA, 02215' } => { storeId: '019a712d-b964-78aa-8037-f1ab5f372120' }
+2025-11-11T04:30:13.414368241Z 
+2025-11-11T04:30:13.480830016Z 
+2025-11-11T04:30:13.480875599Z Requesting.respond {
+2025-11-11T04:30:13.48088403Z   request: '019a712d-b8db-743f-b2ec-51eaae7447a1',
+2025-11-11T04:30:13.48088866Z   storeId: '019a712d-b964-78aa-8037-f1ab5f372120'
+2025-11-11T04:30:13.48089276Z } => { request: '019a712d-b8db-743f-b2ec-51eaae7447a1' }
+2025-11-11T04:30:13.48089647Z 
+2025-11-11T04:30:13.68908068Z [Requesting] Received request for path: /Tagging/addTag
+2025-11-11T04:30:13.754052985Z 
+2025-11-11T04:30:13.754073126Z Requesting.request {
+2025-11-11T04:30:13.754077356Z   storeId: '019a712d-b964-78aa-8037-f1ab5f372120',
+2025-11-11T04:30:13.754093757Z   tag: 'smelly',
+2025-11-11T04:30:13.754096157Z   path: '/Tagging/addTag'
+2025-11-11T04:30:13.754097948Z } => { request: '019a712d-bab9-780d-a5b7-e08e1f2703c0' }
+2025-11-11T04:30:13.754099538Z 
+2025-11-11T04:30:13.82036173Z 
+2025-11-11T04:30:13.820390812Z Tagging.addTag { storeId: '019a712d-b964-78aa-8037-f1ab5f372120', tag: 'smelly' } => {}
+2025-11-11T04:30:13.820393922Z 
+2025-11-11T04:30:13.885868557Z 
+2025-11-11T04:30:13.885899099Z Requesting.respond { request: '019a712d-bab9-780d-a5b7-e08e1f2703c0', status: 'success' } => { request: '019a712d-bab9-780d-a5b7-e08e1f2703c0' }
+2025-11-11T04:30:13.885902249Z 
+2025-11-11T04:30:13.999422168Z [Requesting] Received request for path: /Tagging/addTag
+2025-11-11T04:30:14.064809207Z 
+2025-11-11T04:30:14.064833119Z Requesting.request {
+2025-11-11T04:30:14.064838349Z   storeId: '019a712d-b964-78aa-8037-f1ab5f372120',
+2025-11-11T04:30:14.064842Z   tag: 'big',
+2025-11-11T04:30:14.06484626Z   path: '/Tagging/addTag'
+2025-11-11T04:30:14.06485Z } => { request: '019a712d-bbef-7d01-9ef4-d247e5b39ebe' }
+2025-11-11T04:30:14.064874491Z 
+2025-11-11T04:30:14.130009095Z 
+2025-11-11T04:30:14.130029327Z Tagging.addTag { storeId: '019a712d-b964-78aa-8037-f1ab5f372120', tag: 'big' } => {}
+2025-11-11T04:30:14.130031527Z 
+2025-11-11T04:30:14.195071035Z 
+2025-11-11T04:30:14.195107688Z Requesting.respond { request: '019a712d-bbef-7d01-9ef4-d247e5b39ebe', status: 'success' } => { request: '019a712d-bbef-7d01-9ef4-d247e5b39ebe' }
+2025-11-11T04:30:14.195111538Z 
+2025-11-11T04:30:14.299127668Z [Requesting] Received request for path: /Tagging/addTag
+2025-11-11T04:30:14.362728679Z 
+2025-11-11T04:30:14.362757891Z Requesting.request {
+2025-11-11T04:30:14.362762781Z   storeId: '019a712d-b964-78aa-8037-f1ab5f372120',
+2025-11-11T04:30:14.362766001Z   tag: 'slippery',
+2025-11-11T04:30:14.362769621Z   path: '/Tagging/addTag'
+2025-11-11T04:30:14.362772542Z } => { request: '019a712d-bd1b-7f77-8738-528c802ae1c3' }
+2025-11-11T04:30:14.362775282Z 
+2025-11-11T04:30:14.425693401Z 
+2025-11-11T04:30:14.425736274Z Tagging.addTag { storeId: '019a712d-b964-78aa-8037-f1ab5f372120', tag: 'slippery' } => {}
+2025-11-11T04:30:14.425740424Z 
+2025-11-11T04:30:14.487831793Z 
+2025-11-11T04:30:14.487871665Z Requesting.respond { request: '019a712d-bd1b-7f77-8738-528c802ae1c3', status: 'success' } => { request: '019a712d-bd1b-7f77-8738-528c802ae1c3' }
+2025-11-11T04:30:14.487879376Z 
+2025-11-11T04:30:31.911409796Z [Requesting] Received request for path: /Review/createReview
+2025-11-11T04:30:31.976165047Z 
+2025-11-11T04:30:31.976183318Z Requesting.request {
+2025-11-11T04:30:31.976188879Z   userId: '019a712c-e51f-7911-9463-752b2e980732',
+2025-11-11T04:30:31.976192759Z   storeId: '019a712d-b964-78aa-8037-f1ab5f372120',
+2025-11-11T04:30:31.976196419Z   text: 'dwadsdawd',
+2025-11-11T04:30:31.97621197Z   rating: 3,
+2025-11-11T04:30:31.97621645Z   tags: [ 'Fresh Produce', 'Hot Food', 'Good Selection' ],
+2025-11-11T04:30:31.97622127Z   path: '/Review/createReview'
+2025-11-11T04:30:31.976225061Z } => { request: '019a712e-01e7-776e-83ab-9706fc3e4e0c' }
+2025-11-11T04:30:31.976228571Z 
+2025-11-11T04:30:32.168429638Z 
+2025-11-11T04:30:32.168447509Z Review.createReview {
+2025-11-11T04:30:32.16845358Z   userId: '019a712c-e51f-7911-9463-752b2e980732',
+2025-11-11T04:30:32.16845841Z   storeId: '019a712d-b964-78aa-8037-f1ab5f372120',
+2025-11-11T04:30:32.16846247Z   rating: 3,
+2025-11-11T04:30:32.1684666Z   text: 'dwadsdawd'
+2025-11-11T04:30:32.168484121Z } => { reviewId: '019a712e-02a6-7ae7-a97d-9591991883c0' }
+2025-11-11T04:30:32.168500082Z 
+2025-11-11T04:30:32.23155408Z [Requesting] Error processing request: Cannot convert a Symbol value to a number
